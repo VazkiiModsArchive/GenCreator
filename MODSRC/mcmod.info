@@ -1,0 +1,17 @@
+[
+{
+  "modid": "GenCreator",
+  "name": "§oGenCreator",
+  "description": "A Mod insipired by AtomicStryker's Ruins mod, it allows you to create worldgen strucutres from inside the game.",
+  "version": "1.0",
+  "mcversion": "1.5+",
+  "logoFile": "",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["Vazkii"],
+  "credits": "AtomicStryker for the original Ruins mod.",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
