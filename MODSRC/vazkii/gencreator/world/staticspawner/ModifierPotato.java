@@ -7,6 +7,7 @@
 package vazkii.gencreator.world.staticspawner;
 
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
@@ -21,16 +22,13 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 public class ModifierPotato implements IModifier {
 
 	@Override
-	public void apply(ItemStack stack, EntityLiving entity) {
-		forceEntityHealthChange(entity, entity.getHealth() + getHealth(stack));
+	public void apply(ItemStack stack, EntityLivingBase entity) {
+		entity.setHealth(entity.getHealth() + getHealth(stack));
 	}
 
 	public int getHealth(ItemStack stack) {
 		return stack.stackSize;
 	}
 
-	public void forceEntityHealthChange(EntityLiving entity, int health) {
-		ReflectionHelper.setPrivateValue(EntityLiving.class, entity, health, 27);
-	}
 
 }

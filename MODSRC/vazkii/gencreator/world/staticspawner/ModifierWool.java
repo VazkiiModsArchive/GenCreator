@@ -9,7 +9,7 @@ package vazkii.gencreator.world.staticspawner;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.item.ItemStack;
 
@@ -33,7 +33,7 @@ public class ModifierWool implements IModifier {
 	}
 
 	@Override
-	public void apply(ItemStack stack, EntityLiving entity) {
+	public void apply(ItemStack stack, EntityLivingBase entity) {
 		if(entity instanceof EntityVillager) {
 			EntityVillager villager = (EntityVillager) entity;
 			if(villagerColors.containsKey(stack.getItemDamage()))

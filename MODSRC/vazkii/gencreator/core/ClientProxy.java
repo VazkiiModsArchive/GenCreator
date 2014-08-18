@@ -13,9 +13,8 @@ import vazkii.gencreator.DataStorage;
 import vazkii.gencreator.client.KeyBindingHandler;
 import vazkii.gencreator.client.SelectionRenderHandler;
 import vazkii.gencreator.client.saving.InventorySyncHandler;
-import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -44,13 +43,13 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void initKeybind(FMLInitializationEvent event) {
-		KeyBindingRegistry.registerKeyBinding(new KeyBindingHandler());
+		FMLCommonHandler.instance().bus().register(new KeyBindingHandler());
 	}
 
 	@Override
 	public void initTickHandlers(FMLInitializationEvent event) {
 		InventorySyncHandler tickHandler = new InventorySyncHandler();
-		TickRegistry.registerTickHandler(tickHandler, Side.CLIENT);
+		FMLCommonHandler.instance().bus().register(tickHandler);
 		MinecraftForge.EVENT_BUS.register(tickHandler);
 	}
 

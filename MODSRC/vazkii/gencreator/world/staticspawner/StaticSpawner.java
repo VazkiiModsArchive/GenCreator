@@ -6,14 +6,16 @@
 // Created @ 20 Apr 2013
 package vazkii.gencreator.world.staticspawner;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
@@ -31,23 +33,23 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
  */
 public class StaticSpawner {
 
-	private static Map<Integer, IModifier> modifiers = new TreeMap();
+	private static Map<Item, IModifier> modifiers = new HashMap();
 
 	static {
-		modifiers.put(Item.potato.itemID, new ModifierPotato());
-		modifiers.put(Item.poisonousPotato.itemID, new ModifierPoisonPotato());
-		modifiers.put(Item.netherStar.itemID, new ModifierNetherStar());
-		modifiers.put(Item.coal.itemID, new ModifierCoal());
-		modifiers.put(Item.potion.itemID, new ModifierPotion());
-		modifiers.put(Item.emerald.itemID, new ModifierEmerald());
-		modifiers.put(Block.cloth.blockID, new ModifierWool());
+		modifiers.put(Items.potato, new ModifierPotato());
+		modifiers.put(Items.poisonous_potato, new ModifierPoisonPotato());
+		modifiers.put(Items.nether_star, new ModifierNetherStar());
+		modifiers.put(Items.coal, new ModifierCoal());
+		modifiers.put(Items.potionitem, new ModifierPotion());
+		modifiers.put(Items.emerald, new ModifierEmerald());
+		modifiers.put(Item.getItemFromBlock(Blocks.wool), new ModifierWool());
 	}
 
 	TileEntityChest chest;
 	World world;
 
-	EntityLiving entity;
-	EntityLiving mount;
+	EntityLivingBase entity;
+	EntityLivingBase mount;
 
 	boolean illegal = false;
 	boolean villager = false;
@@ -88,39 +90,40 @@ public class StaticSpawner {
 	}
 
 	private void identifyEntity(ItemStack stack, boolean mount) {
-		if(stack == null || stack.getItem() == null || stack.itemID != Item.monsterPlacer.itemID) {
+		if(stack == null || stack.getItem() == null || stack.getItem() != Items.spawn_egg) {
 			if(!mount)
 				illegal = true;
 			return;
 		}
 
 		Entity entity = EntityList.createEntityByID(stack.getItemDamage(), world);
-		if(entity == null || !(entity instanceof EntityLiving)) {
+		if(entity == null || !(entity instanceof EntityLivingBase)) {
 			if(!mount)
 				illegal = true;
 			return;
 		}
 
 		if(!mount) {
-			this.entity = (EntityLiving) entity;
+			this.entity = (EntityLivingBase) entity;
 			this.entity.setPosition(chest.xCoord + 0.5, chest.yCoord, chest.zCoord + 0.5);
 			villager = entity instanceof EntityVillager;
-	        if (stack.hasDisplayName()) // Set custom name
-	            this.entity.func_94058_c(stack.getDisplayName());
+	        if (stack.hasDisplayName() && this.entity instanceof EntityLiving) // Set custom name
+	            ((EntityLiving) this.entity).setCustomNameTag(stack.getDisplayName());
 	        flagEntityNonDespawnable(this.entity);
 		} else {
 			this.mount = (EntityLiving) entity;
 			this.mount.setPosition(chest.xCoord + 0.5, chest.yCoord, chest.zCoord + 0.5);
-	        if (stack.hasDisplayName()) // Set custom name
-	        	this.mount.func_94058_c(stack.getDisplayName());
+	        if (stack.hasDisplayName() && this.mount instanceof EntityLiving) // Set custom name
+	        	 ((EntityLiving) this.mount).setCustomNameTag(stack.getDisplayName());
 	        flagEntityNonDespawnable(this.mount);
 		}
 
 
 	}
 
-	private void flagEntityNonDespawnable(EntityLiving entity) {
-		ReflectionHelper.setPrivateValue(EntityLiving.class, entity, true, 72);
+	private void flagEntityNonDespawnable(EntityLivingBase entity) {
+		if(entity instanceof EntityLiving)
+			((EntityLiving) entity).func_110163_bv();
 	}
 
 	private void equipEntity() {
@@ -163,10 +166,10 @@ public class StaticSpawner {
 	}
 
 	private void maximizeVillagerWealth(EntityVillager villager) {
-		ReflectionHelper.setPrivateValue(EntityVillager.class, villager, Integer.MAX_VALUE, 8);
+		villager.setHealth(Integer.MAX_VALUE);
 	}
 
-	private void applyModifiers(int start, EntityLiving entity) {
+	private void applyModifiers(int start, EntityLivingBase entity) {
 		if(illegal || entity == null)
 			return;
 
@@ -177,9 +180,9 @@ public class StaticSpawner {
 		}
 	}
 
-	private void applyModifier(ItemStack stack, EntityLiving entity) {
-		if(modifiers.containsKey(stack.itemID)) {
-			IModifier modifier = modifiers.get(stack.itemID);
+	private void applyModifier(ItemStack stack, EntityLivingBase entity) {
+		if(modifiers.containsKey(stack.getItem())) {
+			IModifier modifier = modifiers.get(stack.getItem());
 			modifier.apply(stack, entity);
 		}
 	}

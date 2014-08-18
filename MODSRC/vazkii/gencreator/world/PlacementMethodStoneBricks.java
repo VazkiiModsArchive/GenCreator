@@ -27,7 +27,7 @@ public class PlacementMethodStoneBricks extends PlacementMethod {
 	public void place(World world, Random rand, int x, int y, int z, FullBlockData blockData, StructureData structure) {
 		if(!structure.randomizeStoneBricks)
 			super.place(world, rand, x, y, z, blockData, structure);
-		else world.setBlock(x, y, z, blockData.id, rand.nextInt(3), 2);
+		else world.setBlock(x, y, z, blockData.block, rand.nextInt(3), 1 | 2);
 	}
 
 }

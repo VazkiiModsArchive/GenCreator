@@ -8,6 +8,7 @@ package vazkii.gencreator.world;
 
 import java.util.Random;
 
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
@@ -33,7 +34,7 @@ public class PlacementMethodChest extends PlacementMethod {
 
 	@Override
 	public void place(World world, Random rand, int x, int y, int z, FullBlockData blockData, StructureData structure) {
-		world.setBlock(x, y, z, blockData.id, blockData.meta, 2);
+		world.setBlock(x, y, z, blockData.block, blockData.meta, 2);
 		TileEntity tile = constructTileEntity(world, x, y, z, blockData, structure);
 		if(tile instanceof TileEntityChest) {
 			boolean spawnerChest = isSpawner((TileEntityChest) tile);
@@ -42,7 +43,7 @@ public class PlacementMethodChest extends PlacementMethod {
 				world.setBlockToAir(x, y, z);
 				return;
 			}
-			world.setBlockTileEntity(x, y, z, tile);
+			world.setTileEntity(x, y, z, tile);
 			if(shouldRandomize((TileEntityChest) tile))
 				randomize(rand, (TileEntityChest) tile);
 		}
@@ -50,7 +51,7 @@ public class PlacementMethodChest extends PlacementMethod {
 
 	public boolean isSpawner(TileEntityChest tile) {
 		ItemStack stack = tile.getStackInSlot(0);
-		return stack != null && stack.itemID == Item.monsterPlacer.itemID;
+		return stack != null && stack.getItem() == Items.spawn_egg;
 	}
 
 	public void handleSpawner(World world, Random rand, TileEntityChest tile, FullBlockData blockData, StructureData structure) {
@@ -60,7 +61,7 @@ public class PlacementMethodChest extends PlacementMethod {
 
 	public boolean shouldRandomize(TileEntityChest tile) {
 		ItemStack stack = tile.getStackInSlot(0);
-		return stack != null && stack.itemID == Item.paper.itemID && stack.getDisplayName().equals("[RANDOM]");
+		return stack != null && stack.getItem() == Items.paper && stack.getDisplayName().equals("[RANDOM]");
 	}
 
 	public void randomize(Random rand, TileEntityChest tile) {

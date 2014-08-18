@@ -16,7 +16,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.BiomeGenBase;
 
 import org.lwjgl.opengl.GL11;
@@ -26,6 +28,8 @@ import vazkii.gencreator.client.saving.TemporaryStructureData;
 import vazkii.gencreator.client.saving.WriteStructureThread;
 import vazkii.gencreator.helper.BoundingBox;
 import vazkii.gencreator.helper.FullBlockData;
+import vazkii.gencreator.lib.ObfuscationKeys;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 /**
  * GuiCreator
@@ -37,7 +41,7 @@ import vazkii.gencreator.helper.FullBlockData;
  */
 public class GuiCreator extends GuiScreen {
 
-	public static final String GUI_FILE_LOCATION = "/vazkii/gencreator/res/creator.png";
+	public static final ResourceLocation guiResource = new ResourceLocation("gencreator:textures/creator.png");
 
 	GuiTextField textBox;
 
@@ -55,7 +59,7 @@ public class GuiCreator extends GuiScreen {
 
 	public GuiCreator() {
         availableBiomes = new ArrayList();
-        for (BiomeGenBase biome : BiomeGenBase.biomeList) {
+        for (BiomeGenBase biome : ReflectionHelper.<BiomeGenBase[], BiomeGenBase>getPrivateValue(BiomeGenBase.class, null, ObfuscationKeys.biomeList)) {
         	if(biome != null)
         		availableBiomes.add(biome);
         }
@@ -73,9 +77,9 @@ public class GuiCreator extends GuiScreen {
 
         final String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
 
-		textBox = new GuiRestrictedTextField(fontRenderer, xStart + 88, yStart + 19, 82, 12, allowedChars);
+		textBox = new GuiRestrictedTextField(fontRendererObj, xStart + 88, yStart + 19, 82, 12, allowedChars);
         textBox.setTextColor(0xDDDDDD);
-        textBox.func_82266_h(-1);
+//        textBox.func_82266_h(-1);
         textBox.setEnableBackgroundDrawing(false);
         textBox.setMaxStringLength(15);
 
@@ -117,7 +121,7 @@ public class GuiCreator extends GuiScreen {
 		this.error = error;
 		correct = MathHelper.stringNullOrLengthZero(error);
 		((GuiButton) buttonList.get(11)).enabled = correct;
-		((GuiButton) buttonList.get(11)).drawButton = correct;
+		((GuiButton) buttonList.get(11)).visible = correct;
 	}
 
 	@Override
@@ -185,53 +189,53 @@ public class GuiCreator extends GuiScreen {
 	@Override
 	public void drawScreen(int par1, int par2, float par3) {
 		Minecraft mc = Minecraft.getMinecraft();
-		mc.renderEngine.bindTexture(GUI_FILE_LOCATION);
+		mc.renderEngine.bindTexture(guiResource);
 
 		int xSize = 176;
 		int ySize = 166;
 		int renderXSize = 246;
 
-		fontRenderer.getUnicodeFlag();
+		fontRendererObj.getUnicodeFlag();
         int xStart = (width - xSize) / 2;
         int yStart = (height - ySize) / 2;
 		drawTexturedModalRect(xStart, yStart, 0, 0, renderXSize, ySize);
 
 		if(correct) {
 			drawTexturedModalRect(xStart + 8, yStart + ySize, 0, ySize, 43, 22);
-		} else drawCenteredString(fontRenderer, error, width / 2, yStart + 170, 0xFF4444);
+		} else drawCenteredString(fontRendererObj, error, width / 2, yStart + 170, 0xFF4444);
 
-		drawCenteredString(fontRenderer, "Editing Structure", width / 2, yStart - 13, 0xFFFFFF);
-		drawCenteredString(fontRenderer, "Biomes", xStart + xSize + 35, yStart - 7, 0xFFFFFF);
-		drawCenteredStringNoShadow(fontRenderer, "Name", xStart + 127, yStart + 5, 0x444444);
-		drawCenteredStringNoShadow(fontRenderer, "Gen Biomes (" + chosenBiomes.size() + ")", xStart + 127, yStart + 36, 0x444444);
+		drawCenteredString(fontRendererObj, "Editing Structure", width / 2, yStart - 13, 0xFFFFFF);
+		drawCenteredString(fontRendererObj, "Biomes", xStart + xSize + 35, yStart - 7, 0xFFFFFF);
+		drawCenteredStringNoShadow(fontRendererObj, "Name", xStart + 127, yStart + 5, 0x444444);
+		drawCenteredStringNoShadow(fontRendererObj, "Gen Biomes (" + chosenBiomes.size() + ")", xStart + 127, yStart + 36, 0x444444);
 
-		fontRenderer.drawString("Rarity", xStart + 87, yStart + 100, 0x444444);
-		fontRenderer.drawString("" + rarity, xStart + 138, yStart + 100, 0x444444);
-		fontRenderer.drawString("Randomize Stone Bricks", xStart + 8, yStart + 125, 0x444444);
-		fontRenderer.drawString("Ignore Air Spaces", xStart + 8, yStart + 145, 0x444444);
+		fontRendererObj.drawString("Rarity", xStart + 87, yStart + 100, 0x444444);
+		fontRendererObj.drawString("" + rarity, xStart + 138, yStart + 100, 0x444444);
+		fontRendererObj.drawString("Randomize Stone Bricks", xStart + 8, yStart + 125, 0x444444);
+		fontRendererObj.drawString("Ignore Air Spaces", xStart + 8, yStart + 145, 0x444444);
 
-		fontRenderer.setUnicodeFlag(true);
+		fontRendererObj.setUnicodeFlag(true);
 		for(int i = 0; i < 3; i++) {
 			BiomeGenBase biome = availableBiomes.get(i + biomeScrollIndex);
 			String biomeName = biome.biomeName;
-			String truncatedBiomeName = fontRenderer.trimStringToWidth(biome.biomeName, 38);
+			String truncatedBiomeName = fontRendererObj.trimStringToWidth(biome.biomeName, 38);
 			if(!truncatedBiomeName.equals(biomeName))
 				truncatedBiomeName = truncatedBiomeName.concat(".");
-			fontRenderer.drawStringWithShadow(truncatedBiomeName, xStart + 183, yStart + 15 + i * 20, biome.color);
+			fontRendererObj.drawStringWithShadow(truncatedBiomeName, xStart + 183, yStart + 15 + i * 20, biome.color);
 		}
 
 		if(chosenBiomes.size() > 0) {
 			BiomeGenBase biome = chosenBiomes.get(chosenBiomeScrollIndex);
 			String biomeName = biome.biomeName;
-			String truncatedBiomeName = fontRenderer.trimStringToWidth(biome.biomeName, 63);
+			String truncatedBiomeName = fontRendererObj.trimStringToWidth(biome.biomeName, 63);
 			if(!truncatedBiomeName.equals(biomeName))
 				truncatedBiomeName = truncatedBiomeName.concat(".");
-			drawCenteredString(fontRenderer, truncatedBiomeName, xStart + 127, yStart + 52, biome.color);
+			drawCenteredString(fontRendererObj, truncatedBiomeName, xStart + 127, yStart + 52, biome.color);
 		}
-		fontRenderer.setUnicodeFlag(false);
+		fontRendererObj.setUnicodeFlag(false);
 
 		String sizes = DataStorage.selection.getXSize() + "x" + DataStorage.selection.getYSize() + "x" +  DataStorage.selection.getZSize();
-		drawCenteredStringNoShadow(fontRenderer, sizes, xStart + 45, yStart + 105, 0x444444);
+		drawCenteredStringNoShadow(fontRendererObj, sizes, xStart + 45, yStart + 105, 0x444444);
 		renderSelection(xStart, yStart);
 
 		textBox.drawTextBox();
@@ -283,7 +287,7 @@ public class GuiCreator extends GuiScreen {
 			for(int y = 0; y < sel.getYSize(); y++) {
 				for(int z = 0; z < sel.getZSize(); z++) {
 					FullBlockData data = sel.getBlockData(x, y, z);
-					renderBlock(data.id, data.meta, x, y, z);
+					renderBlock(data.block, data.meta, x, y, z);
 				}
 			}
 		}
@@ -294,10 +298,9 @@ public class GuiCreator extends GuiScreen {
 	private static final RenderBlocks renderBlocks = new RenderBlocks();
 
 	// Renders a block, all translations applied
-	public void renderBlock(int id, int meta, int x, int y, int z) {
-		Block block = Block.blocksList[id];
+	public void renderBlock(Block block, int meta, int x, int y, int z) {
 		if(block != null) {
-			mc.renderEngine.bindTexture("/terrain.png");
+			mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 
 			GL11.glPushMatrix();
 			GL11.glTranslatef(x - DataStorage.selection.getXSize() / 2, y, z - DataStorage.selection.getZSize() / 2);
@@ -306,7 +309,7 @@ public class GuiCreator extends GuiScreen {
 		}
 	}
 
-    public void drawCenteredStringNoShadow(FontRenderer par1FontRenderer, String par2Str, int par3, int par4, int par5) {
-        par1FontRenderer.drawString(par2Str, par3 - par1FontRenderer.getStringWidth(par2Str) / 2, par4, par5);
+    public void drawCenteredStringNoShadow(FontRenderer par1fontRendererObj, String par2Str, int par3, int par4, int par5) {
+        par1fontRendererObj.drawString(par2Str, par3 - par1fontRendererObj.getStringWidth(par2Str) / 2, par4, par5);
     }
 }

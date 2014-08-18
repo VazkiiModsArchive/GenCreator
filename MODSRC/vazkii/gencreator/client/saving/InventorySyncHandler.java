@@ -19,12 +19,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import vazkii.gencreator.lib.ModConstants;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 
 /**
  * InventorySyncHandler
@@ -35,7 +35,7 @@ import cpw.mods.fml.common.TickType;
  *
  * @author Vazkii
  */
-public class InventorySyncHandler implements ITickHandler {
+public class InventorySyncHandler {
 
 	public static Map<ChunkCoordinates, IInventory> syncedInventories = new HashMap();
 
@@ -43,38 +43,35 @@ public class InventorySyncHandler implements ITickHandler {
 
 	List<IInventory> invsSynced = new ArrayList();
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if(event.action == Action.RIGHT_CLICK_BLOCK)
 			currentCoords = new ChunkCoordinates(event.x, event.y, event.z);
 	}
 
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) {
-		// NO-OP
-	}
+	@SubscribeEvent
+	public void tickEnd(ClientTickEvent event) {
+		if(event.phase == Phase.END) {
+			Minecraft mc = Minecraft.getMinecraft();
+			if(mc.theWorld != null && mc.currentScreen != null && mc.thePlayer.capabilities.isCreativeMode && mc.currentScreen instanceof GuiContainer && currentCoords != null) {
+				GuiContainer containerGui = (GuiContainer) mc.currentScreen;
+				Container container = containerGui.inventorySlots;
+				List<Slot> slots = container.inventorySlots;
 
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-		Minecraft mc = Minecraft.getMinecraft();
-		if(mc.theWorld != null && mc.currentScreen != null && mc.thePlayer.capabilities.isCreativeMode && mc.currentScreen instanceof GuiContainer && currentCoords != null) {
-			GuiContainer containerGui = (GuiContainer) mc.currentScreen;
-			Container container = containerGui.inventorySlots;
-			List<Slot> slots = container.inventorySlots;
-
-			for(Slot slot : slots) {
-				if(slot.inventory instanceof InventoryBasic) {
-					new ChunkCoordinates(currentCoords.posX, currentCoords.posY, currentCoords.posZ);
-					sync(currentCoords, slot.inventory);
+				for(Slot slot : slots) {
+					if(slot.inventory instanceof InventoryBasic) {
+						new ChunkCoordinates(currentCoords.posX, currentCoords.posY, currentCoords.posZ);
+						sync(currentCoords, slot.inventory);
+					}
 				}
 			}
+
+			if(mc.theWorld == null && !syncedInventories.isEmpty())
+				syncedInventories.clear();
+
+			if(!invsSynced.isEmpty())
+				invsSynced.clear();
 		}
-
-		if(mc.theWorld == null && !syncedInventories.isEmpty())
-			syncedInventories.clear();
-
-		if(!invsSynced.isEmpty())
-			invsSynced.clear();
 	}
 
 	public void sync(ChunkCoordinates coords, IInventory inv) {
@@ -84,13 +81,4 @@ public class InventorySyncHandler implements ITickHandler {
 		}
 	}
 
-	@Override
-	public EnumSet<TickType> ticks() {
-		return EnumSet.of(TickType.CLIENT);
-	}
-
-	@Override
-	public String getLabel() {
-		return ModConstants.MOD_ID;
-	}
 }

@@ -14,6 +14,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.biome.BiomeGenBase;
+import vazkii.gencreator.lib.ObfuscationKeys;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 /**
  * StructureReader
@@ -42,11 +44,12 @@ public class StructureReader {
 		data.blockData = new FullBlockData[xSize][ySize][zSize];
 
 		NBTTagCompound blocksCmp = cmp.getCompoundTag("blockData");
-		Collection<NBTBase> tags = blocksCmp.getTags();
-		for(NBTBase tag : tags) {
+		Collection<String> keys = blocksCmp.func_150296_c();
+		for(String key : keys) {
+			NBTBase tag = blocksCmp.getTag(key);
 			if(tag instanceof NBTTagCompound) {
 				NBTTagCompound blockCmp = (NBTTagCompound) tag;
-				ChunkCoordinates coords = getCoordinates(blockCmp.getName());
+				ChunkCoordinates coords = getCoordinates(key);
 				FullBlockData blockData = FullBlockData.constructFromNBT(blockCmp);
 				data.blockData[coords.posX][coords.posY][coords.posZ] = blockData;
 			}
@@ -70,7 +73,7 @@ public class StructureReader {
 		String[] values = str.split(",");
 		for(String s : values) {
 			int i = Integer.parseInt(s);
-			list.add(BiomeGenBase.biomeList[i]);
+			list.add(ReflectionHelper.<BiomeGenBase[], BiomeGenBase>getPrivateValue(BiomeGenBase.class, null, ObfuscationKeys.biomeList)[i]);
 		}
 
 		return list;

@@ -8,8 +8,8 @@ package vazkii.gencreator.world.staticspawner;
 
 import java.util.List;
 
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.item.Item;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 
@@ -23,8 +23,8 @@ import net.minecraft.potion.PotionEffect;
 public class ModifierPotion implements IModifier {
 
 	@Override
-	public void apply(ItemStack stack, EntityLiving entity) {
-		List<PotionEffect> potionEffectList = Item.potion.getEffects(stack);
+	public void apply(ItemStack stack, EntityLivingBase entity) {
+		List<PotionEffect> potionEffectList = Items.potionitem.getEffects(stack);
 		for(PotionEffect effect : potionEffectList) {
 			PotionEffect effect1 = new PotionEffect(effect.getPotionID(), Integer.MAX_VALUE, effect.getAmplifier());
 			effect1.getCurativeItems().clear();

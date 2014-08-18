@@ -6,7 +6,7 @@
 // Created @ 20 Apr 2013
 package vazkii.gencreator.world.staticspawner;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.item.ItemStack;
 
@@ -21,7 +21,7 @@ import net.minecraft.item.ItemStack;
 public class ModifierCoal implements IModifier {
 
 	@Override
-	public void apply(ItemStack stack, EntityLiving entity) {
+	public void apply(ItemStack stack, EntityLivingBase entity) {
 		if(entity instanceof EntitySkeleton) {
 			EntitySkeleton skeleton = (EntitySkeleton) entity;
 			skeleton.setSkeletonType(1);

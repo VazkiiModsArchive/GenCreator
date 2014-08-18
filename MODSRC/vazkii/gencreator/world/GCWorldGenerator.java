@@ -9,6 +9,7 @@ package vazkii.gencreator.world;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import vazkii.gencreator.DataStorage;
@@ -28,9 +29,9 @@ public class GCWorldGenerator implements IWorldGenerator {
 	/// XXX - Test Seed: 7274662765201441577
 
 	private static final PlacementMethod REGULAR = new PlacementMethod(),
-										 AIR = new PlacementMethodAir(),
-										 STONE_BRICK = new PlacementMethodStoneBricks(),
-										 CHEST = new PlacementMethodChest();
+			AIR = new PlacementMethodAir(),
+			STONE_BRICK = new PlacementMethodStoneBricks(),
+			CHEST = new PlacementMethodChest();
 
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
@@ -66,16 +67,16 @@ public class GCWorldGenerator implements IWorldGenerator {
 	}
 
 	public void placeBlock(World world, Random rand, int x, int y, int z, FullBlockData blockData, StructureData structure) {
-		int blockID = blockData.id;
+		Block block = blockData.block;
 
 		PlacementMethod method = REGULAR;
-		if(blockID == 0)
+		if(block == Blocks.air)
 			method = AIR;
 
-		if(blockID == Block.stoneBrick.blockID)
+		if(block == Blocks.stonebrick)
 			method = STONE_BRICK;
 
-		if(blockID == Block.chest.blockID || blockID == Block.chestTrapped.blockID)
+		if(block == Blocks.chest || block == Blocks.trapped_chest)
 			method = CHEST;
 
 		method.place(world, rand, x, y, z, blockData, structure);

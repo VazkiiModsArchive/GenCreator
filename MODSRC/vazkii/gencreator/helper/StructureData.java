@@ -31,7 +31,7 @@ public class StructureData {
 
 	public boolean canGenerate(World world, Random rand, int x, int y, int z) {
 		BiomeGenBase biome = world.getBiomeGenForCoords(x, z);
-		return rand.nextInt(rarity) == 0 && validBiomes.contains(biome) && world.getBlockId(x, y - 1, z) == biome.topBlock;
+		return rand.nextInt(rarity) == 0 && validBiomes.contains(biome) && world.getBlock(x, y - 1, z) == biome.topBlock;
 	}
 
 }

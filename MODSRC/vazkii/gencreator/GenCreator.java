@@ -12,9 +12,8 @@ import java.util.logging.Logger;
 import vazkii.gencreator.core.CommonProxy;
 import vazkii.gencreator.lib.ModConstants;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -35,20 +34,16 @@ public class GenCreator {
 	@Instance(ModConstants.MOD_ID)
 	public static GenCreator instance;
 
-	public static Logger logger;
-
 	public static File dataDirectory;
 
-	@PreInit
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		instance = this;
-
-		logger = event.getModLog();
 
 		proxy.preInit(event);
 	}
 
-	@Init
+	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		proxy.init(event);
 	}

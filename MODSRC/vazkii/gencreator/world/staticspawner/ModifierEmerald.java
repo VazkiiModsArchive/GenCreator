@@ -8,7 +8,9 @@ package vazkii.gencreator.world.staticspawner;
 
 import java.util.Arrays;
 
+import vazkii.gencreator.lib.ObfuscationKeys;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
@@ -23,13 +25,14 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 public class ModifierEmerald implements IModifier {
 
 	@Override
-	public void apply(ItemStack stack, EntityLiving entity) {
+	public void apply(ItemStack stack, EntityLivingBase entity) {
 		float[] values = new float[5];
 		Arrays.fill(values, 0F);
 		changeEntityDropChances(entity, values);
 	}
 
-	public void changeEntityDropChances(EntityLiving entity, float[] values) {
-		ReflectionHelper.setPrivateValue(EntityLiving.class, entity, values, 67);
+	public void changeEntityDropChances(EntityLivingBase entity, float[] values) {
+		if(entity instanceof EntityLiving)
+			ReflectionHelper.setPrivateValue(EntityLiving.class, (EntityLiving) entity, values, ObfuscationKeys.equipmentDropChances);
 	}
 }

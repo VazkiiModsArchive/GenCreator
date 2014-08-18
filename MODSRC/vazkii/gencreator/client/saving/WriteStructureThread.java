@@ -7,16 +7,19 @@
 package vazkii.gencreator.client.saving;
 
 import java.io.File;
-import java.util.logging.Level;
+
+import org.apache.logging.log4j.Level;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.biome.BiomeGenBase;
 import vazkii.gencreator.DataStorage;
 import vazkii.gencreator.GenCreator;
 import vazkii.gencreator.helper.FullBlockData;
 import vazkii.gencreator.helper.IOHelper;
 import vazkii.gencreator.helper.StructureReader;
+import cpw.mods.fml.common.FMLLog;
 
 /**
  * WriteStructureThread
@@ -68,9 +71,9 @@ public class WriteStructureThread extends Thread {
 			FullBlockData blockData = data.nextBlock();
 			NBTTagCompound block1Cmp = new NBTTagCompound();
 			blockData.writeToNBT(block1Cmp);
-			blockCmp.setCompoundTag(generateLocationString(), block1Cmp);
+			blockCmp.setTag(generateLocationString(), block1Cmp);
 		} while(data.iterateLocation());
-		cmp.setCompoundTag("blockData", blockCmp);
+		cmp.setTag("blockData", blockCmp);
 
 		ms = System.currentTimeMillis() - startMs;
 		say("Injecting NBT to .dat File [" + ms + "ms]");
@@ -104,9 +107,9 @@ public class WriteStructureThread extends Thread {
 	}
 
 	public void say(String s) {
-		GenCreator.logger.log(Level.INFO, s);
+		FMLLog.log(Level.INFO, s);
 		if(mc.thePlayer != null)
-			mc.thePlayer.addChatMessage(s);
+			mc.thePlayer.addChatMessage(new ChatComponentText("[GenCreator] " + s));
 	}
 
 }

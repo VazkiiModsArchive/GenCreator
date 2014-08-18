@@ -6,6 +6,7 @@
 // Created @ 18 Apr 2013
 package vazkii.gencreator.helper;
 
+import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,31 +24,32 @@ import vazkii.gencreator.client.saving.InventorySyncHandler;
  */
 public class FullBlockData {
 
-	public int id, meta;
+	public Block block; 
+	public int meta;
 	public TileEntity tile;
 
 	public NBTTagCompound cmp;
 
 	public FullBlockData(World world, int x, int y, int z) {
-		id = world.getBlockId(x, y, z);
+		block = world.getBlock(x, y, z);
 		meta = world.getBlockMetadata(x, y, z);
-		tile = world.getBlockTileEntity(x, y, z);
+		tile = world.getTileEntity(x, y, z);
 	}
 
-	public FullBlockData(int id, int meta, TileEntity tile) {
-		this.id = id;
+	public FullBlockData(Block block, int meta, TileEntity tile) {
+		this.block = block;
 		this.meta = meta;
 		this.tile = tile;
 	}
 
-	public FullBlockData(int id, int meta, NBTTagCompound tile) {
-		this.id = id;
+	public FullBlockData(Block block, int meta, NBTTagCompound tile) {
+		this.block = block;
 		this.meta = meta;
 		cmp = tile;
 	}
 
 	public void writeToNBT(NBTTagCompound cmp) {
-		cmp.setInteger("id", id);
+		cmp.setInteger("id", Block.getIdFromBlock(block));
 		cmp.setInteger("meta", meta);
 		if(tile != null) {
 			NBTTagCompound tileCmp = new NBTTagCompound();
@@ -65,7 +67,7 @@ public class FullBlockData {
 			}
 
 			tile.writeToNBT(tileCmp);
-			cmp.setCompoundTag("tile", tileCmp);
+			cmp.setTag("tile", tileCmp);
 		}
 	}
 
@@ -73,6 +75,6 @@ public class FullBlockData {
 		int id = cmp.getInteger("id");
 		int meta = cmp.getInteger("meta");
 		NBTTagCompound tile = cmp.hasKey("tile") ? cmp.getCompoundTag("tile") : null;
-		return new FullBlockData(id, meta, tile);
+		return new FullBlockData(Block.getBlockById(id), meta, tile);
 	}
 }

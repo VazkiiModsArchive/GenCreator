@@ -12,12 +12,12 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.ForgeSubscribe;
 
 import org.lwjgl.opengl.GL11;
 
 import vazkii.gencreator.DataStorage;
 import vazkii.gencreator.helper.BoundingBox;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * SelectionRenderHandler
@@ -28,7 +28,7 @@ import vazkii.gencreator.helper.BoundingBox;
  */
 public class SelectionRenderHandler {
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onWorldRenderLast(RenderWorldLastEvent event) {
 		GL11.glPushMatrix();
 		GL11.glDisable(GL11.GL_DEPTH_TEST);

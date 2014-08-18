@@ -26,9 +26,9 @@ import vazkii.gencreator.helper.StructureData;
 public class PlacementMethod {
 
 	public void place(World world, Random rand, int x, int y, int z, FullBlockData blockData, StructureData structure) {
-		world.setBlock(x, y, z, blockData.id, blockData.meta, 2);
+		world.setBlock(x, y, z, blockData.block, blockData.meta, 2);
 		TileEntity tile = constructTileEntity(world, x, y, z, blockData, structure);
-		world.setBlockTileEntity(x, y, z, tile);
+		world.setTileEntity(x, y, z, tile);
 	}
 
 	TileEntity constructTileEntity(World world, int x, int y, int z, FullBlockData blockData, StructureData structure) {

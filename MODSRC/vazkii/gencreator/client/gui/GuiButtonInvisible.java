@@ -25,14 +25,14 @@ public class GuiButtonInvisible extends GuiButton {
 
 	@Override
 	public void drawButton(Minecraft par1Minecraft, int par2, int par3) {
-		if(drawButton) {
+		if(visible) {
 			FontRenderer fontrenderer = par1Minecraft.fontRenderer;
-			field_82253_i = par2 >= xPosition && par3 >= yPosition && par2 < xPosition + width && par3 < yPosition + height;
+			field_146123_n = par2 >= xPosition && par3 >= yPosition && par2 < xPosition + width && par3 < yPosition + height;
 			int l = 0x444444;
 
 			if (!enabled)
 				l = -6250336;
-			else if (field_82253_i)
+			else if (field_146123_n)
 				l = 0x9999FF;
 
 			drawCenteredString(fontrenderer, displayString, xPosition + width / 2, yPosition + (height - 8) / 2, l);

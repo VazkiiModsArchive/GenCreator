@@ -40,7 +40,7 @@ public class CommonProxy {
 
 		initTickHandlers(event);
 
-		GameRegistry.registerWorldGenerator(new GCWorldGenerator());
+		GameRegistry.registerWorldGenerator(new GCWorldGenerator(), 9001); // idunno
 
 		for(File f : GenCreator.dataDirectory.listFiles())
 			if(f.getName().endsWith(".dat"))

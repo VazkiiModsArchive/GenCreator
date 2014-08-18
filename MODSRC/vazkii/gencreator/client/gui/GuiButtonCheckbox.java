@@ -36,10 +36,10 @@ public class GuiButtonCheckbox extends GuiButton {
 
 	@Override
 	public void drawButton(Minecraft par1Minecraft, int par2, int par3) {
-        par1Minecraft.renderEngine.bindTexture(GuiCreator.GUI_FILE_LOCATION);
+        par1Minecraft.renderEngine.bindTexture(GuiCreator.guiResource);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        field_82253_i = par2 >= xPosition && par3 >= yPosition && par2 < xPosition + width && par3 < yPosition + height;
-        int hoverState = getHoverState(field_82253_i);
+        field_146123_n = par2 >= xPosition && par3 >= yPosition && par2 < xPosition + width && par3 < yPosition + height;
+        int hoverState = getHoverState(field_146123_n);
         drawTexturedModalRect(xPosition, yPosition, hoverState == 1 ? 32 : 48, !enabled ? 223 : 239, 16, 16);
 	}
 }
