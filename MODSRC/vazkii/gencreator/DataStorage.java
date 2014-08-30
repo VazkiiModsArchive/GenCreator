@@ -30,7 +30,6 @@ public class DataStorage {
 	@SideOnly(Side.CLIENT)
 	public static BoundingBox selection;
 
-	@SideOnly(Side.CLIENT)
 	public static List<String> usedNames = new ArrayList();
 
 	public static List<StructureData> structures = new ArrayList();
